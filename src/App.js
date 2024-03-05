@@ -128,12 +128,15 @@ class App extends Component {
 	};
 
 	generateSteps = () => {
-		let array = this.state.array.slice();
-		let steps = this.state.arraySteps.slice();
-		let colorSteps = this.state.colorSteps.slice();
-
+		// Ensure 'array' is defined and an array
+		let array = Array.isArray(this.state.array) ? this.state.array.slice() : [];
+		// Ensure 'steps' is defined and an array
+		let steps = Array.isArray(this.state.arraySteps) ? this.state.arraySteps.slice() : [];
+		// Ensure 'colorSteps' is defined and an array
+		let colorSteps = Array.isArray(this.state.colorSteps) ? this.state.colorSteps.slice() : [];
+	
 		this.ALGORITHMS[this.state.algorithm](array, 0, steps, colorSteps);
-
+	
 		this.setState({
 			arraySteps: steps,
 			colorSteps: colorSteps,
@@ -199,93 +202,102 @@ class App extends Component {
 	};
 
 	render() {
-		let barsDiv = this.state.array.map((value, index) => (
+		let barsDiv;
+	  
+		// Check if this.state.array is defined before mapping over it
+		if (this.state.array) {
+		  barsDiv = this.state.array.map((value, index) => (
 			<Bar
-				key={index}
-				index={index}
-				length={value}
-				color={this.state.colorKey[index]}
-				changeArray={this.changeArray}
+			  key={index}
+			  index={index}
+			  length={value}
+			  color={this.state.colorKey[index]}
+			  changeArray={this.changeArray}
 			/>
-		));
-		let playButton;
-
-		if (this.state.arraySteps.length === this.state.currentStep) {
-			playButton = (
-				<button className='controller' onClick={this.generateBars}>
-					<RotateLeft />
-				</button>
-			);
+		  ));
 		} else {
-			playButton = (
-				<button className='controller' onClick={this.setTimeouts}>
-					<Play />
-				</button>
-			);
+		  barsDiv = <p>Loading or handle undefined array state...</p>;
 		}
-
+	  
+		let playButton;
+	  
+		if (this.state.arraySteps.length === this.state.currentStep) {
+		  playButton = (
+			<button className='controller' onClick={this.generateBars}>
+			  <RotateLeft />
+			</button>
+		  );
+		} else {
+		  playButton = (
+			<button className='controller' onClick={this.setTimeouts}>
+			  <Play />
+			</button>
+		  );
+		}
+	  
 		return (
-			<div className='app'>
-				<h1 className='page-header_title risetext'>
-					<span className='page-header_title-main enclose'>
-						Sorting Visualizer
-					</span>
-				</h1>
-				
-				<div className='frame'>
-					<div className='barsDiv container card'>{barsDiv}</div>
-				</div>
-				
-				<div className='control-pannel'>
-					<div className='control-buttons'>
-						<button className='controller' onClick={this.stepBack}>
-							<Backward />
-						</button>
-						{playButton}
-						<button className='controller' onClick={this.stepForward}>
-							<Forward />
-						</button>
-					</div>
-				</div>
-				
-				<div className='pannel'>
-					<Form
-						formLabel='Algorithms'
-						values={[
-							'Bubble Sort',
-							'Merge Sort',
-							'Quick Sort',
-							'Insertion Sort',
-							'Selection Sort',
-						]}
-						labels={[
-							'Bubble Sort',
-							'Merge Sort',
-							'Quick Sort',
-							'Insertion Sort',
-							'Selection Sort',
-						]}
-						currentValue={this.state.algorithm}
-						onChange={this.changeAlgorithm}
-					/>
-					<Form
-						formLabel='Items'
-						values={[10, 15, 20, 25, 30]}
-						labels={[10, 15, 20, 25, 30]}
-						currentValue={this.state.barCount}
-						onChange={this.changeBarCount}
-					/>
-					<Form
-						formLabel='Speed'
-						values={[500, 400, 300, 200, 100]}
-						labels={['1x', '2x', '3x', '4x', '5x']}
-						currentValue={this.state.delay}
-						onChange={this.changeSpeed}
-					/>
-				</div>
+		  <div className='app'>
+			<h1 className='page-header_title risetext'>
+			  <span className='page-header_title-main enclose'>
+				Sorting Visualizer
+			  </span>
+			</h1>
+	  
+			<div className='frame'>
+			  <div className='barsDiv container card'>{barsDiv}</div>
 			</div>
+	  
+			<div className='control-pannel'>
+			  <div className='control-buttons'>
+				<button className='controller' onClick={this.stepBack}>
+				  <Backward />
+				</button>
+				{playButton}
+				<button className='controller' onClick={this.stepForward}>
+				  <Forward />
+				</button>
+			  </div>
+			</div>
+	  
+			<div className='pannel'>
+			  <Form
+				formLabel='Algorithms'
+				values={[
+				  'Bubble Sort',
+				  'Merge Sort',
+				  'Quick Sort',
+				  'Insertion Sort',
+				  'Selection Sort',
+				]}
+				labels={[
+				  'Bubble Sort',
+				  'Merge Sort',
+				  'Quick Sort',
+				  'Insertion Sort',
+				  'Selection Sort',
+				]}
+				currentValue={this.state.algorithm}
+				onChange={this.changeAlgorithm}
+			  />
+			  <Form
+				formLabel='Items'
+				values={[10, 15, 20, 25, 30]}
+				labels={[10, 15, 20, 25, 30]}
+				currentValue={this.state.barCount}
+				onChange={this.changeBarCount}
+			  />
+			  <Form
+				formLabel='Speed'
+				values={[500, 400, 300, 200, 100]}
+				labels={['1x', '2x', '3x', '4x', '5x']}
+				currentValue={this.state.delay}
+				onChange={this.changeSpeed}
+			  />
+			</div>
+		  </div>
 		);
-	}
+	  }
+	  
 }
 
 export default App;
